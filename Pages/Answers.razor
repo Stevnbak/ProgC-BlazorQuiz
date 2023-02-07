@@ -1,0 +1,46 @@
+﻿@page "/answers"
+@inject NavigationManager navigationManager
+<PageTitle>Answers</PageTitle>
+<h1>Answers</h1>
+
+@if (store.currentAnswers == null)
+{
+    navigationManager.NavigateTo("/");
+} else {
+    <h2>@store.currentAnswers[0].Question.Category - @store.currentAnswers[0].Question.Difficulty</h2>
+    <p>Correct: @(store.currentAnswers.ToList().FindAll(answer => answer.Correct).Count)/@store.currentAnswers.Length</p>
+    @foreach (QuizAnswer answer in store.currentAnswers)
+    {
+        <h3>@answer.Question.Question</h3>
+        <div class="answers">
+            @foreach (string option in answer.Question.AllAnswers)
+            {
+                <button class="btn @(answer.Answer == option ? "selected" : "") @(answer.Question.Correct_Answer == option ? "correct" : "")">@option</button>
+            }
+        </div>
+    }
+}
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        store.currentQuiz = null;
+    }
+}
+
+<style>
+    .btn {
+        border-width: 3px;
+        border-color: #808080;
+        cursor: default !important;
+        min-width: 5rem;
+    }
+    .selected {
+        background-color: #B72400;
+    }
+    .correct {
+        border-color: #00DB55;
+    }
+    .selected.correct {
+        background-color: #00762E;
+    }
+</style>

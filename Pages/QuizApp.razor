@@ -1,0 +1,96 @@
+﻿@page "/quiz"
+@inject NavigationManager navigationManager
+<PageTitle>Quiz</PageTitle>
+<h1>Quiz</h1>
+
+@if (store.currentQuiz == null)
+{
+    navigationManager.NavigateTo("/");
+} else {
+    <p>@(current + 1)/@store.currentQuiz.Count</p>
+    <h2>@store.Category - @store.currentQuiz[0].Difficulty</h2>
+    @if (currentQuestion != null)
+    {
+        <div>
+            <h2>@currentQuestion.Question</h2>
+            @foreach (string answer in currentQuestion.AllAnswers)
+            {
+                <button @onclick="() => Answer(answer)" class="btn @(store.currentAnswers[current] != null ? answer == store.currentAnswers[current].Answer ? "selected" : "" : "")">@answer</button>
+            }
+        </div>
+        <div>
+            @if (current == 0)
+            {
+                <button class="btn" disabled>Previous Question</button>
+            }
+            else
+            {
+                <button class="btn" @onclick="prevQuestion">Previous Question</button>
+            }
+            <button class="btn" @onclick="nextQuestion">Next Question</button>
+        </div>
+    }
+}
+
+@code {
+    int current = 0;
+    QuizQuestion? currentQuestion = store.currentQuiz != null ? store.currentQuiz[0] : null;
+
+    void Answer(string text)
+    {
+        QuizAnswer answer = new QuizAnswer(currentQuestion, text);
+        store.currentAnswers[current] = answer;
+    }
+
+    void prevQuestion()
+    {
+        current--;
+        if (current < 0)
+        {
+            return;
+        }
+        currentQuestion = store.currentQuiz[current];
+    }
+
+    void nextQuestion()
+    {
+        current++;
+        if (current >= store.currentQuiz.Count)
+        {
+            current--;
+            done();
+            return;
+        }
+        else
+        {
+            currentQuestion = store.currentQuiz[current];
+        }
+    }
+
+    void done()
+    {
+        for (int a = 0; a < store.currentAnswers.Length; a++)
+        {
+
+            if (store.currentAnswers[a] == null)
+            {
+                store.currentAnswers[a] = new QuizAnswer(store.currentQuiz[a], "");
+            }
+        }
+        navigationManager.NavigateTo("/answers");
+    }
+}
+
+<style>
+    .btn {
+        border: 3px solid #808080;
+        min-width: 5rem;
+    }
+
+        .btn:hover {
+            background-color: #999999;
+        }
+    .selected {
+        background-color: #225D31;
+    }
+</style>

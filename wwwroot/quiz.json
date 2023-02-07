@@ -1,0 +1,50 @@
+[
+  {
+    "category": "Sports",
+    "type": "Multiple Choice",
+    "difficulty": "easy",
+    "question": "In the 2014 FIFA World Cup, name the score between Brazil and Germany",
+    "correct_answer": "1-6",
+    "incorrect_answers": [
+      "2-0",
+      "1-4",
+      "3-2"
+    ]
+  },
+  {
+    "category": "Sports",
+    "type": "Multiple Choice",
+    "difficulty": "easy",
+    "question": "Which Country will host the FIFA World Cup 2022",
+    "correct_answer": "Quatar",
+    "incorrect_answers": [
+      "France",
+      "Brazil",
+      "Russia"
+    ]
+  },
+  {
+    "category": "Sports",
+    "type": "Multiple Choice",
+    "difficulty": "Easy",
+    "question": "Who did Steven Gerrard Win the Champions league with",
+    "correct_answer": "Liverpool",
+    "incorrect_answers": [
+      "Chelsea",
+      "Man Utd",
+      "Man City"
+    ]
+  },
+  {
+    "category": "Sports",
+    "type": "Multiple Choice",
+    "difficulty": "Easy",
+    "question": "Who won the Premier League Season 2015-2016",
+    "correct_answer": "Leicster",
+    "incorrect_answers": [
+      "Chelsea",
+      "Man Utd",
+      "Man City"
+    ]
+  }
+]

@@ -1,0 +1,107 @@
+﻿@page "/"
+@inject HttpClient Http
+@inject NavigationManager navigationManager
+
+<PageTitle>Home</PageTitle>
+<h1>Home</h1>
+
+@if(error != "" && error != null)
+{
+    <p id="error">Error: @error</p>
+}
+@if(loading)
+{
+    <p>Loading questions...</p>
+}
+
+@if (categories != null)
+{
+    <EditForm Model="@formOptions" OnSubmit="@startQuiz">
+        <div>
+            <label>Category:</label>
+            <InputSelect @bind-Value="@formOptions.Category">
+                <option value="0">All</option>
+                @foreach (api.Category category in categories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </InputSelect>
+        </div>
+        <div>
+            <label>Difficulty:</label>
+            <InputSelect @bind-Value="@formOptions.Difficulty">
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+            </InputSelect>
+        </div>
+        <div>
+            <label>Question type:</label>
+            <InputSelect @bind-Value="@formOptions.Type">
+                <option value="multiple">Multiple Choice</option>
+                <option value="boolean">True/False</option>
+                <option value="both">Both</option>
+            </InputSelect>
+        </div>
+        <div>
+            <label>Amount of Questions:</label>
+            <InputNumber @bind-Value="@formOptions.Questions" min="1" max="50"/>
+        </div>
+        <div>
+            <input type="submit" value="Start" class="btn"/>
+        </div>
+    </EditForm>
+} else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    string error = "";
+    bool loading = false;
+    FormOptions formOptions = new FormOptions();
+    api.Category[] categories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await api.apiCategoryRequest();
+    }
+
+    async void startQuiz(EditContext editContext)
+    {
+        loading = true;
+        QuizQuestion[] possibleQuestions = await api.apiRequest(formOptions.Category, formOptions.Questions, formOptions.Difficulty, formOptions.Type);
+        if (possibleQuestions.Length == 0)
+        {
+            error = "No questions found! (try with a lower number of questions)";
+            loading = false;
+            return;
+        }
+        store.currentQuiz = possibleQuestions.ToList();
+        store.currentAnswers = new QuizAnswer[formOptions.Questions];
+        store.Category = formOptions.Category == "0" ? "All" : store.currentQuiz[0].Category;
+        navigationManager.NavigateTo("/quiz");
+    }
+
+    class FormOptions
+    {
+        public string Category = "0";
+        public string Difficulty = "easy";
+        public string Type = "both";
+        public int Questions = 5;
+    }
+}
+
+<style>
+    .btn {
+        border: 3px solid #808080;
+        min-width: 5rem;
+    }
+
+        .btn:hover {
+            background-color: #999999;
+        }
+    #error {
+        color:red;
+    }
+</style>
